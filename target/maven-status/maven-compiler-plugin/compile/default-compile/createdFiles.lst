@@ -1,3 +1,4 @@
+com/payment/gateway/controller/GlobalExceptionHandler.class
 com/payment/gateway/util/CardUtils.class
 com/payment/gateway/util/Constants.class
 com/payment/gateway/model/PaymentRequest.class
