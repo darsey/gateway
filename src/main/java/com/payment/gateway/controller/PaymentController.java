@@ -26,7 +26,7 @@ public class PaymentController {
 
     @PostMapping
     public Mono<ResponseEntity<PaymentResponse>> processPayment(@Valid @RequestBody PaymentRequest request) {
-        return request.flatMap(paymentService::processPayment)
+        return paymentService.processPayment(request)
                 .map(ResponseEntity::ok)
                 .onErrorResume(e -> Mono.just(ResponseEntity.badRequest()
                         .body(new PaymentResponse(null, Status.DENIED, e.getMessage()))));
