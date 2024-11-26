@@ -18,17 +18,17 @@ import reactor.core.publisher.Mono;
 public class PaymentService {
 
     private final Duration timeoutDuration;
-    private final int halfSecondLatency;
+    private final int latencyInMillis;
 
     //done like this for testing purposes, should be extracted into properties file
     public PaymentService() {
-        this.halfSecondLatency = 500; // Default value
+        this.latencyInMillis = 500; // Default value
         this.timeoutDuration = Duration.ofSeconds(5); // Default value
     }
 
-    public PaymentService(int halfSecondLatency, Duration timeoutDuration) {
+    public PaymentService(int latencyInMillis, Duration timeoutDuration) {
         this.timeoutDuration = timeoutDuration;
-        this.halfSecondLatency = halfSecondLatency;
+        this.latencyInMillis = latencyInMillis;
     }
 
     private final ConcurrentHashMap<String, PaymentResponse> transactionStore = new ConcurrentHashMap<>();
@@ -44,11 +44,11 @@ public class PaymentService {
     }
 
     private Mono<PaymentRequest> initializePendingTransaction(PaymentRequest request, String transactionId) {
-        PaymentResponse pendingResponse = new PaymentResponse(
-                transactionId,
-                Status.PENDING,
-                "Transaction is pending"
-        );
+        PaymentResponse pendingResponse = PaymentResponse.builder()
+                .withTransactionId(transactionId)
+                .withStatus(Status.PENDING)
+                .withMessage("Transaction is pending")
+                .build();
         transactionStore.put(transactionId, pendingResponse);
         return Mono.just(request);
     }
@@ -65,14 +65,18 @@ public class PaymentService {
         String acquirer = getAcquirer(bin);
 
         // Simulate acquirer response with latency, for timeout maybe add different status
-        return Mono.delay(Duration.ofMillis(halfSecondLatency))
+        return Mono.delay(Duration.ofMillis(latencyInMillis))
                 .map(ignored ->
-                        new PaymentResponse(transactionId, getStatus(request), "Processed by " + acquirer))
+                        PaymentResponse.builder().withTransactionId(transactionId)
+                                .withStatus(getStatus(request))
+                                .withMessage("Processed by " + acquirer).build())
                 .timeout(timeoutDuration)
                 .onErrorResume(TimeoutException.class, e ->
                         Mono.just(
-                                new PaymentResponse(transactionId, Status.DENIED, "No response from " + acquirer)
-                        ));
+                                PaymentResponse.builder().withTransactionId(transactionId)
+                                        .withStatus(Status.DENIED)
+                                        .withMessage("No response from " + acquirer)
+                                        .build()));
     }
 
     private static Status getStatus(PaymentRequest request) {

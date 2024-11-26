@@ -18,13 +18,13 @@ A reactive payment service platform that processes payment requests, validates c
 3. **Acquirer Routing**
    - Routes transactions to **Acquirer A** or **Acquirer B** based on the BIN (Bank Identification Number).
    - Logic:
-     - **Even sum of BIN digits** → Route to **Acquirer A**.
-     - **Odd sum of BIN digits** → Route to **Acquirer B**.
+      - **Even sum of BIN digits** → Route to **Acquirer A**.
+      - **Odd sum of BIN digits** → Route to **Acquirer B**.
 
 4. **Transaction Simulation**
    - Simulates transaction approval or denial based on the card number's last digit:
-     - **Even last digit** → `APPROVED`.
-     - **Odd last digit** → `DENIED`.
+      - **Even last digit** → `APPROVED`.
+      - **Odd last digit** → `DENIED`.
 
 5. **Timeout Handling**
    - If the acquirer does not respond within a specified timeout, the transaction is marked as `DENIED`.
@@ -140,30 +140,30 @@ POST /api/payments
 **Request Body**:
 ```json
 {
-  "cardNumber": "4137894711755904",
-  "expiryDate": "12/25",
-  "cvv": "123",
-  "amount": 100.00,
-  "currency": "USD",
-  "merchantId": "merchant123"
+   "cardNumber": "4137894711755904",
+   "expiryDate": "12/25",
+   "cvv": "123",
+   "amount": 100.00,
+   "currency": "USD",
+   "merchantId": "merchant123"
 }
 ```
 
 **Response (Success)**:
 ```json
 {
-  "transactionId": "e2a3e8e9-1234-4567-890a-abcdef123456",
-  "status": "APPROVED",
-  "message": "Processed by Acquirer A"
+   "transactionId": "e2a3e8e9-1234-4567-890a-abcdef123456",
+   "status": "APPROVED",
+   "message": "Processed by Acquirer A"
 }
 ```
 
 **Response (Timeout)**:
 ```json
 {
-  "transactionId": "e2a3e8e9-1234-4567-890a-abcdef123456",
-  "status": "DENIED",
-  "message": "No response from Acquirer B"
+   "transactionId": "e2a3e8e9-1234-4567-890a-abcdef123456",
+   "status": "DENIED",
+   "message": "No response from Acquirer B"
 }
 ```
 
@@ -173,16 +173,18 @@ POST /api/payments
 
 ```
 src/main/java/com/payment/gateway/
-├── controller/                 # API controllers
-│   └── PaymentController.java  # Handles incoming payment requests
-├── model/                      # Data models
-│   ├── PaymentRequest.java     # Payment request structure
-│   ├── PaymentResponse.java    # Payment response structure
-│   └── Status.java             # Enum for transaction statuses
-├── service/                    # Business logic
-│   └── PaymentService.java     # Core payment processing logic
-├── util/                       # Utility classes
-│   └── CardUtils.java          # Luhn algorithm and routing logic
+├── controller/                       # API controllers
+|   |── GlobalExceptionHandler.java   # Exception handler for validation errors
+│   └── PaymentController.java        # Handles incoming payment requests
+
+├── model/                            # Data models
+│   ├── PaymentRequest.java           # Payment request structure
+│   ├── PaymentResponse.java          # Payment response structure
+│   └── Status.java                   # Enum for transaction statuses
+├── service/                          # Business logic
+│   └── PaymentService.java           # Core payment processing logic
+├── util/                             # Utility classes
+│   └── CardUtils.java                # Luhn algorithm and routing logic
 ```
 
 ---
@@ -215,7 +217,7 @@ mvn test
 
 1. **Persistent Storage**:
    - Integrate with a database (e.g., PostgreSQL or MongoDB) for transaction persistence.
-   
+
 2. **External Acquirer Integration**:
    - Replace mock acquirers with real payment gateways (e.g., Stripe, PayPal).
 

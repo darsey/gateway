@@ -32,7 +32,9 @@ class PaymentControllerTest {
                 "1234567890123456", "12/25", "123", 100.0, "USD", "merchant123"
         );
 
-        PaymentResponse mockResponse = new PaymentResponse("txn123", Status.APPROVED, "Processed by Acquirer A");
+        PaymentResponse mockResponse = PaymentResponse.builder().withTransactionId("txn123")
+                .withStatus(Status.APPROVED)
+                .withMessage("Processed by Acquirer A").build();
         when(paymentService.processPayment(any())).thenReturn(Mono.just(mockResponse));
 
         Mono<ResponseEntity<PaymentResponse>> responseMono = paymentController.processPayment(request);

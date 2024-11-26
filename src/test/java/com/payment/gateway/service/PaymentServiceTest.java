@@ -80,7 +80,7 @@ class PaymentServiceTest {
 
         StepVerifier.create(responseMono)
                 .expectNextMatches(response -> response.getStatus() == Status.DENIED &&
-                        response.getMessage().startsWith("No response from"))
+                        response.getMessage().startsWith("No response from Acquirer A"))
                 .verifyComplete();
     }
 }
