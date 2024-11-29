@@ -86,7 +86,7 @@ public class PaymentService {
 
 
     private static String getAcquirer(String bin) {
-        //this can be implemented as strategy pattern in case we have different services for each acquirer
+        //this can be implemented as strategy pattern in case we have different service implementations for each acquirer
         return CardUtils.isEvenSumOfDigits(bin) ? ACQUIRER_A : ACQUIRER_B;
     }
 
