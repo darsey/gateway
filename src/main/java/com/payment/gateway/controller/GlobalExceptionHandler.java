@@ -17,9 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<PaymentResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         StringBuilder errorMessage = new StringBuilder("Validation failed: ");
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMessage.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append("; ");
-        });
+        ex.getBindingResult().getFieldErrors().forEach(error -> errorMessage.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append("; "));
 
         PaymentResponse errorResponse = PaymentResponse.builder().withTransactionId("")
                 .withStatus(Status.DENIED)

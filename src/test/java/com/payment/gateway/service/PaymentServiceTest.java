@@ -48,7 +48,7 @@ class PaymentServiceTest {
     @Test
     void processPayment_AcquirerTimeout_ShouldExpectTimeout() {
         // Simulate timeout scenario
-        PaymentService paymentService = new PaymentService(
+        PaymentService service = new PaymentService(
                 6000, // Latency of 6 seconds (exceeds timeout)
                 Duration.ofSeconds(5) // Timeout after 5 seconds
         );
@@ -57,7 +57,7 @@ class PaymentServiceTest {
                 "4137894711755904", "12/25", "123", 100.0, "USD", "merchant123"
         );
 
-        Mono<PaymentResponse> responseMono = paymentService.processPayment(request);
+        Mono<PaymentResponse> responseMono = service.processPayment(request);
 
         StepVerifier.create(responseMono)
                 .expectTimeout(Duration.ofSeconds(5))
@@ -67,7 +67,7 @@ class PaymentServiceTest {
     @Test
     void processPayment_AcquirerTimeout_ShouldReturnDeniedResponse() {
         // Simulate timeout scenario
-        PaymentService paymentService = new PaymentService(
+        PaymentService service = new PaymentService(
                 6000, // Simulated latency (6 seconds, longer than timeout)
                 Duration.ofSeconds(5) // Timeout after 5 seconds
         );
@@ -76,7 +76,7 @@ class PaymentServiceTest {
                 "4137894711755904", "12/25", "123", 100.0, "USD", "merchant123"
         );
 
-        Mono<PaymentResponse> responseMono = paymentService.processPayment(request);
+        Mono<PaymentResponse> responseMono = service.processPayment(request);
 
         StepVerifier.create(responseMono)
                 .expectNextMatches(response -> response.getStatus() == Status.DENIED &&

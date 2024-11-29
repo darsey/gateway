@@ -2,6 +2,9 @@ package com.payment.gateway.util;
 
 public class CardUtils {
 
+    private CardUtils() {
+    }
+
     public static boolean isValidLuhn(String cardNumber) {
         if (!cardNumber.matches("(?=[456]|37)[0-9]{13,16}")) {
             return false;

@@ -7,17 +7,17 @@ public enum Status {
     PENDING("Pending");
 
 
-    private final String status;
+    private final String name;
 
-    Status(String status) {
-        this.status = status;
+    Status(String name) {
+        this.name = name;
     }
 
     public static Status forLastDigit(char lastDigit) {
         return Character.getNumericValue(lastDigit) % 2 == 0 ? Status.APPROVED : Status.DENIED;
     }
 
-    public String getStatus() {
-        return status;
+    public String getName() {
+        return name;
     }
 }
